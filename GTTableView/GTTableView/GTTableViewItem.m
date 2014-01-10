@@ -18,7 +18,7 @@
 @end
 
 @interface GTTableViewItem ()
-@property (nonatomic, assign) GTTableView *tableView;
+@property (nonatomic, weak) GTTableView *tableView;
 #pragma mark Dictionary Backed Accessors
 
 - (BOOL)hasKeyBeenSet_:(NSString*)key;
@@ -57,7 +57,7 @@
     if (filePath)
     {
         NSArray *objects = [[NSBundle mainBundle] loadNibNamed:reuseIdentifier owner:self options:nil];
-        for (id object in objects) if ([object isKindOfClass:[GTTableViewCell class]]) return [object retain];
+        for (id object in objects) if ([object isKindOfClass:[GTTableViewCell class]]) return object;
     }
     return [[GTTableViewCell alloc] initWithStyle:[self style] reuseIdentifier:reuseIdentifier];
 }
@@ -128,7 +128,7 @@
 - (NSIndexPath*)itemWillBecomeSelected 
 {
     //NSLog(@"%@ will become selected",self);
-    return [[[tableView indexPathForItem:self] retain] autorelease];
+    return [tableView indexPathForItem:self];
 }
 - (void)itemDidBecomeSelected
 {
@@ -139,7 +139,7 @@
 - (NSIndexPath*)itemWillBecomeDeselected
 {
     //NSLog(@"%@ will become deselected",self);
-    return [[[tableView indexPathForItem:self] retain] autorelease];     
+    return [tableView indexPathForItem:self];
 }
 
 - (void)itemDidBecomeDeselected
@@ -176,7 +176,7 @@
 #pragma mark - Object Lifecylce -
 + (id)item
 {
-    return [[[[self class] alloc] init] autorelease];
+    return [[[self class] alloc] init];
 }
 - (id)init
 {
@@ -188,23 +188,13 @@
 }
 
 + (id)tableViewItem {
-    return [[[GTTableViewItem alloc] init] autorelease];
-}
-
-- (void)dealloc {
-    [properties_ release];
-    [title_ release];
-    [subtitle_ release];
-
-    target = nil;
-    action = nil;
-    [super dealloc];
+    return [[GTTableViewItem alloc] init];
 }
 
 #pragma mark NSCopying
 - (id)copyWithZone:(NSZone *)zone 
 {
-    return [self retain];
+    return self;
 }
 - (BOOL)isEqual:(id)object
 {

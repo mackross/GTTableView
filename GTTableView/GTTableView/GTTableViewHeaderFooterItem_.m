@@ -10,7 +10,7 @@
 #import "GTTableView.h"
 @interface GTTableViewHeaderFooterItem_ ()
 - (void) setup_;
-@property (nonatomic, assign) GTTableView *tableView;
+@property (nonatomic, weak) GTTableView *tableView;
 @end
 
 @implementation GTTableViewHeaderFooterItem_
@@ -21,14 +21,14 @@
 @synthesize height = height_;
 + (GTTableViewHeaderFooterItem_*)itemWithView:(UIView*)view
 {
-    GTTableViewHeaderFooterItem_* item = [[[GTTableViewHeaderFooterItem_ alloc] init] autorelease];
+    GTTableViewHeaderFooterItem_* item = [[GTTableViewHeaderFooterItem_ alloc] init];
     item.view = view;
     item.height = view.frame.size.height;
     return item;
 }
 + (GTTableViewHeaderFooterItem_*)itemWithText:(NSString*)text
 {
-    GTTableViewHeaderFooterItem_* item = [[[GTTableViewHeaderFooterItem_ alloc] init] autorelease];
+    GTTableViewHeaderFooterItem_* item = [[GTTableViewHeaderFooterItem_ alloc] init];
     item.text = text;
     return item;
 }
@@ -58,12 +58,6 @@
 - (void)setup_
 {
     height_ = GTTableViewHeaderFooterDefaultHeight;
-}
-
-- (void)dealloc {
-    [view_ release];
-    [text_ release];
-    [super dealloc];
 }
 
 @end

@@ -12,7 +12,7 @@ static const CGFloat GTTableViewHeaderFooterDefaultHeight = CGFLOAT_MIN;
 @class GTTableView;
 
 @interface GTTableViewHeaderFooterItem_ : NSObject {
-    GTTableView *tableView;
+    GTTableView *__weak tableView;
 }
 @property (nonatomic, retain) UIView *view;
 @property (nonatomic, copy) NSString *text;

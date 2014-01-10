@@ -11,7 +11,7 @@
 #import "GTTableView.h"
 #import "UILabel+CopyStyle.h"
 @interface GTTableViewCell ()
-@property (nonatomic, assign) GTTableView *tableView;
+@property (nonatomic, weak) GTTableView *tableView;
 @end
 
 @implementation GTTableViewCell
@@ -56,10 +56,6 @@
     self.selectionBackgroundColor = item.selectionBackgroundColor;
     self.shouldIndentWhileEditing = item.shouldIndentWhileEditing;
     self.showsReorderControl = item.shouldShowReorderControl;
-}
-- (void)dealloc
-{
-    [super dealloc];
 }
 
 - (UIColor *)selectionBackgroundColor {

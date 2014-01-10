@@ -22,13 +22,11 @@
 }
 - (void)dealloc {
     [tableView_ setGTTableViewDelegate:nil];
-    [tableView_ release];
-    [super dealloc];
 }
 - (void) viewDidLoad {
     if (!self.tableView)
     {
-        self.tableView = [[[GTTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain] autorelease];
+        self.tableView = [[GTTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         self.view = self.tableView;
     }
     if (!self.tableView.delegate)

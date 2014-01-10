@@ -176,39 +176,6 @@
     [self teardownFooterItems_];
     [self tearDownItems_];
     [self tearDownCells_];
-    
-    [defaultCellDeleteConfirmationButtonTitle_ release];
-    [defaultCellLabel_ release];
-    [defaultCellSubtitleLabel_ release];
-    [defaultCellBackgroundColor_ release];
-    [defaultCellSelectionBackgroundColor_  release];
-    [sectionIndexTitlesForTableView_ release];
-    
-    [insertedSections_ release];
-    [deletedSections_ release];
-    [itemsMadeVisible_ release];
-    [itemsMadeHidden_ release];
-    
-    [items_ release];
-    [updates_ release];
-    [itemsAndCachedIndexPaths_ release];
-    [itemsAndCachedVisibleIndexPaths_ release];
-    [cachedIndexPathsAndItems_ release];
-    [cachedVisibleIndexPathsAndItems_ release];
-    
-    [headerItems_ release];
-    [footerItems_ release];
-    [cachedIndexPaths_ release];
-    [cachedVisibleIndexPaths_ release];
-
-    [cells_ release];
-    [headerGradientTop_ release];
-    [headerGradientBottom_ release];
-    [footerGradientTop_ release];
-    [footerGradientBottom_ release];
-    [super dealloc];
-    
-    
 }
 
 - (void)tearDownItems_
@@ -283,7 +250,7 @@
     [self addGestureRecognizers_];
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///
 // monitoring keyboard property
 
 - (BOOL)isMonitoringKeyboard 
@@ -314,7 +281,7 @@
     monitoringKeyboard_ = monitoringKeyboard;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///
 // notification setup
 
 - (void)beginKeyboardMonitoring_ 
@@ -328,7 +295,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///
 // notification handling
 
 - (void)keyboardWillShow_:(NSNotification *)notification 
@@ -403,7 +370,7 @@
     
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///
 // auto focus
 
 - (void)autoFocusOnView:(UIView*)view WithAutoScrollPosition:(GTTableViewAutoFocusScrollPosition)scrollPosition
@@ -478,7 +445,7 @@
     return nil;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
+///
 // keyboard hiding
 
 - (void) addGestureRecognizers_
@@ -486,7 +453,7 @@
     if (self.frameChangeOffset == 0) return;
     if (!tapGestureRecognizer_&&dismissKeyboardOnTouchOutside_)
     {
-        tapGestureRecognizer_ = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard_:)] autorelease];
+        tapGestureRecognizer_ = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard_:)];
         tapGestureRecognizer_.cancelsTouchesInView = NO;
         [self addGestureRecognizer:tapGestureRecognizer_];
     }
@@ -517,21 +484,21 @@
 
     updating_ = YES;
     
-    [updates_ autorelease]; updates_ = nil;
+    updates_ = nil;
     updates_ = [[NSMutableArray alloc] init];
     for (NSMutableArray *sectionItems in items_)
     {
-        NSMutableArray *copyOfSectionItems = [[sectionItems mutableCopy] autorelease];
+        NSMutableArray *copyOfSectionItems = [sectionItems mutableCopy];
         [updates_ addObject:copyOfSectionItems];
     }
     
-    [insertedSections_ release]; insertedSections_ = nil;
-    [deletedSections_ release]; deletedSections_ = nil;
+    insertedSections_ = nil;
+    deletedSections_ = nil;
     insertedSections_ = [[NSMutableIndexSet alloc] init];
     deletedSections_ = [[NSMutableIndexSet alloc] init];
     
-    [itemsMadeVisible_ release]; itemsMadeVisible_ = nil;
-    [itemsMadeHidden_ release]; itemsMadeHidden_ = nil;
+    itemsMadeVisible_ = nil;
+    itemsMadeHidden_ = nil;
     itemsMadeVisible_ = [[NSMutableSet alloc] init];
     itemsMadeHidden_ = [[NSMutableSet alloc] init];
     
@@ -542,11 +509,11 @@
 
     updating_ = NO;
     
-    [insertedSections_ release]; insertedSections_ = nil;
-    [deletedSections_ release]; deletedSections_ = nil;
+    insertedSections_ = nil;
+    deletedSections_ = nil;
     
-    [itemsMadeVisible_ release]; itemsMadeVisible_ = nil;
-    [itemsMadeHidden_ release]; itemsMadeHidden_ = nil;
+    itemsMadeVisible_ = nil;
+    itemsMadeHidden_ = nil;
     
     [self updateGradientFrames_];
 }
@@ -577,10 +544,10 @@
     NSSet *itemsAfter = [NSSet setWithArray:orderedItemsAfter];
     
     
-    NSMutableSet *insertedItems = [[itemsAfter mutableCopy] autorelease];
+    NSMutableSet *insertedItems = [itemsAfter mutableCopy];
     [insertedItems minusSet:itemsBefore];
     
-    NSMutableSet *deletedItems = [[itemsBefore mutableCopy] autorelease];
+    NSMutableSet *deletedItems = [itemsBefore mutableCopy];
     [deletedItems minusSet:itemsAfter];
 
     
@@ -598,7 +565,7 @@
         [unmovedItems addObjectsFromArray:array1 withIdenticalObjectsAtIdenticalIndexesInArray:array2];
     }
     
-    NSMutableSet *movedItems = [[itemsAfter mutableCopy] autorelease];
+    NSMutableSet *movedItems = [itemsAfter mutableCopy];
     [movedItems minusSet:[NSSet setWithArray:unmovedItems]];
     [movedItems minusSet:insertedItems];
     [movedItems minusSet:deletedItems];
@@ -618,9 +585,9 @@
     
     
     /* The move animation is handled by the user moving the cell. */
-    [items_ autorelease]; items_ = nil;
+    items_ = nil;
     items_ = [updates_ mutableCopy];
-    items_ = (items_) ? items_ :  [[NSMutableArray array] retain];
+    items_ = (items_) ? items_ :  [NSMutableArray array];
     
     NSMutableArray *indexPathsToHide = [NSMutableArray array]; /* Must be done before udpating cached index paths. */
     for (GTTableViewItem *itemToHide in itemsMadeHidden_) [indexPathsToHide addObject:[self indexPathForItem:itemToHide]];
@@ -672,38 +639,36 @@
     [itemsAndCachedIndexPaths_ removeAllObjects];
     [itemsAndCachedVisibleIndexPaths_ removeAllObjects];
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    NSInteger section = 0;
-    for (NSArray *sectionItems in items_) 
-    {
-        NSMutableArray *visibleRows = [NSMutableArray array];
-        NSMutableArray *rows = [NSMutableArray array];
-        NSInteger row = 0;
-        NSInteger visibleRow = 0;
-        for (GTTableViewItem *item in sectionItems)
+    @autoreleasepool {
+        NSInteger section = 0;
+        for (NSArray *sectionItems in items_)
         {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
-            [rows addObject:indexPath];
-            [cachedIndexPathsAndItems_ setObject:item forKey:indexPath];
-            [itemsAndCachedIndexPaths_ setObject:indexPath forKey:item];
-
-            if ([item isVisible]) 
+            NSMutableArray *visibleRows = [NSMutableArray array];
+            NSMutableArray *rows = [NSMutableArray array];
+            NSInteger row = 0;
+            NSInteger visibleRow = 0;
+            for (GTTableViewItem *item in sectionItems)
             {
-                NSIndexPath *visibleIndexPath = [NSIndexPath indexPathForRow:visibleRow inSection:section];
-                [visibleRows addObject:visibleIndexPath]; 
-                [cachedVisibleIndexPathsAndItems_ setObject:item forKey:visibleIndexPath];
-                [itemsAndCachedVisibleIndexPaths_ setObject:visibleIndexPath forKey:item];
-                visibleRow++;
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+                [rows addObject:indexPath];
+                [cachedIndexPathsAndItems_ setObject:item forKey:indexPath];
+                [itemsAndCachedIndexPaths_ setObject:indexPath forKey:item];
+                
+                if ([item isVisible])
+                {
+                    NSIndexPath *visibleIndexPath = [NSIndexPath indexPathForRow:visibleRow inSection:section];
+                    [visibleRows addObject:visibleIndexPath];
+                    [cachedVisibleIndexPathsAndItems_ setObject:item forKey:visibleIndexPath];
+                    [itemsAndCachedVisibleIndexPaths_ setObject:visibleIndexPath forKey:item];
+                    visibleRow++;
+                }
+                row++;
             }
-            row++;
+            [cachedIndexPaths_ addObject:rows];
+            [cachedVisibleIndexPaths_ addObject:visibleRows];
+            section++;
         }
-        [cachedIndexPaths_ addObject:rows];
-        [cachedVisibleIndexPaths_ addObject:visibleRows];
-        section++;
     }
-    
-    [pool drain];
 }
 
 - (void)updateGradientFrames_
@@ -778,7 +743,7 @@
     {
         [items addObjectsFromArray:[self itemsInSection:section onlyVisible:visible]];
     }
-    return [[items copy] autorelease];
+    return [items copy];
 }
 
 - (NSArray*)itemsInSection:(NSInteger)section
@@ -793,7 +758,7 @@
     {
         if (!onlyVisible || item.visible) [items addObject:item];
     }
-    return [[items copy] autorelease];
+    return [items copy];
 }
 
 - (GTTableViewItem*)itemForRowAtIndexPath:(NSIndexPath*)indexPath
@@ -915,7 +880,6 @@
     NSMutableArray *data = (updating_) ? updates_ : items_;
 
     NSMutableArray *sourceSection = [data objectAtIndex:indexPath.section];
-    [[item retain] autorelease];
     [sourceSection removeObjectAtIndex:indexPath.row];
 }
 
@@ -976,7 +940,7 @@
     if (!height)
     {
         [headerGradientBottom_ removeFromSuperview];
-        [headerGradientBottom_ release]; headerGradientBottom_ = nil;
+        headerGradientBottom_ = nil;
         headerPadding_ = 0;
         return;
     }
@@ -1004,7 +968,7 @@
     if (!height)
     {
         [footerGradientTop_ removeFromSuperview];
-        [footerGradientTop_ release]; footerGradientTop_ = nil;
+        footerGradientTop_ = nil;
         footerPadding_ = 0;
     }
     colors = (colors) ? colors : [NSArray arrayWithObjects:[UIColor colorWithWhite:0.0 alpha:0.7],[UIColor colorWithWhite:0.0 alpha:0.3],[UIColor colorWithWhite:0.0 alpha:0.0], nil];
@@ -1031,7 +995,7 @@
     if (!height)
     {
         [headerGradientTop_ removeFromSuperview];
-        [headerGradientTop_ release]; footerGradientTop_ = nil;
+        footerGradientTop_ = nil;
         headerGap_ = 0;
     }
     colors = (colors) ? colors : [NSArray arrayWithObjects:[UIColor colorWithWhite:0.0 alpha:0.7],[UIColor colorWithWhite:0.0 alpha:0.4],[UIColor colorWithWhite:0.0 alpha:0.0], nil];
@@ -1058,7 +1022,7 @@
     if (!height)
     {
         [footerGradientBottom_ removeFromSuperview];
-        [footerGradientBottom_ release]; footerGradientTop_ = nil;
+        footerGradientTop_ = nil;
         footerGap_ = 0;
     }
     colors = (colors) ? colors : [NSArray arrayWithObjects:[UIColor colorWithWhite:0.0 alpha:0.4],[UIColor colorWithWhite:0.0 alpha:0.08],[UIColor colorWithWhite:0.0 alpha:0.0], nil];
@@ -1091,7 +1055,7 @@
     GTTableViewCell *cell = (GTTableViewCell*)[self dequeueReusableCellWithIdentifier:[[item class] reuseIdentifier]];
     if (!cell)
     {
-        cell = [[item newTableViewCell] autorelease];
+        cell = [item newTableViewCell];
         [cell setTableView:self];
     }
     [cell prepareCellForReuseForItem_:item];

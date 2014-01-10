@@ -10,7 +10,7 @@
 @class GTTableViewItem;
 @class GTTableView;
 @interface GTTableViewCell : UITableViewCell {
-    GTTableView *tableView; /**< Use this in subclasses to access the tableview. */
+    GTTableView *__weak tableView; /**< Use this in subclasses to access the tableview. */
 }
 
 @property (nonatomic, retain) UIColor *selectionBackgroundColor;

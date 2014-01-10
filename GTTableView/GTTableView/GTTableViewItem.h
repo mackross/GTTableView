@@ -12,7 +12,7 @@
 @class GTTableViewCell;
 @interface GTTableViewItem : NSObject <NSCopying> {
 @protected
-    GTTableView *tableView; /**< Subclasses should use this to access the current GTTableView. */
+    GTTableView *__weak tableView; /**< Subclasses should use this to access the current GTTableView. */
 @private
     
     /**
