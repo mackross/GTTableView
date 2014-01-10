@@ -29,7 +29,7 @@
     /* Sizing the Label's Text. */
     self.adjustsFontSizeToFitWidth = aLabel.adjustsFontSizeToFitWidth;
     self.baselineAdjustment = aLabel.baselineAdjustment;
-    self.minimumFontSize = aLabel.minimumFontSize;
+    self.minimumScaleFactor = aLabel.minimumScaleFactor;
     self.numberOfLines = aLabel.numberOfLines;
     
     /* Managing Highlight Values. */
